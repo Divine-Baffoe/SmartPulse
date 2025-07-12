@@ -1,0 +1,8 @@
+{
+  "DATABASE_URL": "postgresql://postgres:kobe1234@localhost:5432/postgres",
+  "db": {
+    "connectionString": "postgresql://postgres:kobe1234@localhost:5432/postgres",
+    "maxConnections": 10,
+    "idleTimeout": 30
+  }
+}

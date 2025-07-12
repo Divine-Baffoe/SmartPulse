@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  EMPLOYEE
+  ADMIN
+}
+
+model ProjectAssignment {
+  id          Int    @id @default(autoincrement())
+  userId      Int
+  user        User   @relation("UserToProjectAssignments", fields: [userId], references: [id])
+  projectName String
+  githubLink  String?
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String        @unique
+  password    String        //Hashed with bcrypt
+  countrycode String        //Added GH '+233'
+  contact     String
+  companyId   Int
+  company     Company       @relation(fields: [companyId], references: [id])
+  role        UserRole      @default(EMPLOYEE) // 'employee' or 'admin'
+  termsAgreed Boolean       @default(false) // Tracks T&C agreement
+  avatarUrl   String?       // Optional: Profile image
+  inviteToken String?       // Optional: For email invites
+  verificationToken       String?
+  verificationTokenExpiry DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  isVerified  Boolean       @default(false)
+  invitedById Int?
+  invitedBy   User?         @relation("UserInvites", fields: [invitedById], references: [id])
+  invitedUsers User[]       @relation("UserInvites")
+  workSessions WorkSession[]
+  Alerts       Alert[]
+  settings     Json?        // Added for user settings
+  projectAssignmentsUser ProjectAssignment[] @relation("UserToProjectAssignments")
+  
+}
+
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String
+  users     User[]
+}
+
+model WorkSession {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  user           User      @relation(fields: [userId], references: [id])
+  startTime      DateTime
+  endTime        DateTime?
+  productive     Int       // In minutes
+  unproductive   Int       // In minutes
+  undefined      Int       // In minutes
+  idleTime       Int       // In minutes
+
+  appsUsed       Json      // Array of { name: string, duration: number }
+  websitesUsed   Json      // Array of { name: string, duration: number }
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Alert {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  type       AlertType
+  details    String
+  activity   Json     // { productive: number, unproductive: number, undefined: number }
+  timestamp  DateTime @default(now())
+}
+
+enum AlertType {
+  productive
+  unproductive
+
+}
+
