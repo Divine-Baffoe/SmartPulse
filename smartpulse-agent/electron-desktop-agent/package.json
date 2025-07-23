@@ -1,0 +1,35 @@
+{
+  "name": "electron-desktop-agent",
+  "version": "1.0.0",
+  "description": "A desktop agent that monitors worker activities including idle time, productive hours, and non-productive hours.",
+  "main": "src/main/main.ts",
+  "scripts": {
+    "start": "electron .",
+    "build": "tsc",
+    "dev": "electron . --dev"
+  },
+  "dependencies": {
+    "electron": "^25.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-loader": "^9.0.0",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^4.0.0",
+    "webpack-dev-server": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/electron-desktop-agent.git"
+  },
+  "keywords": [
+    "electron",
+    "desktop",
+    "monitoring",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
