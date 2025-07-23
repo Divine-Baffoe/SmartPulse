@@ -21,7 +21,7 @@ model ProjectAssignment {
   user        User   @relation("UserToProjectAssignments", fields: [userId], references: [id])
   projectName String
   githubLink  String?
-  status      String
+  status      ProjectStatus // 'assigned' or 'completed'
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -34,6 +34,7 @@ model User {
   countrycode String        //Added GH '+233'
   contact     String
   companyId   Int
+  notifications Json?        // { dailyReports: boolean, stressAlerts: boolean }
   company     Company       @relation(fields: [companyId], references: [id])
   role        UserRole      @default(EMPLOYEE) // 'employee' or 'admin'
   termsAgreed Boolean       @default(false) // Tracks T&C agreement
@@ -94,3 +95,7 @@ enum AlertType {
 
 }
 
+enum ProjectStatus{
+  assigned
+  completed
+}

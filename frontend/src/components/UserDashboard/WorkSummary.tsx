@@ -12,14 +12,8 @@ interface WorkSummaryData {
   productivity: number;
 }
 
-interface User {
-  id: number;
-  name: string;
-  companyId: number;
-}
-
 // Mock data (replace with API call)
-const fetchMockSummary = (userId: number, period: string): Promise<WorkSummaryData[]> =>
+{/*const fetchMockSummary = (userId: number, period: string): Promise<WorkSummaryData[]> =>
   new Promise((resolve) =>
     setTimeout(
       () =>
@@ -29,19 +23,27 @@ const fetchMockSummary = (userId: number, period: string): Promise<WorkSummaryDa
         ]),
       1000,
     ),
-  );
+  );*/}
+
 
 const WorkSummary: React.FC = () => {
   const [summary, setSummary] = useState<WorkSummaryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [period, setPeriod] = useState<'day' | 'week' | 'month'>('week');
-  const user: User = { id: 1, name: 'Maureen Semenhyia', companyId: 1 }; // Replace with auth context
+ 
 
   // Fetch summary with retry
   const fetchSummary = async (retries = 3): Promise<void> => {
     try {
-      const data = await fetchMockSummary(user.id, period);
+      const res = await fetch(`http://localhost:3000/api/employees/work-summary?period=${period}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
       setSummary(data);
       setLoading(false);
     } catch (err) {
@@ -53,7 +55,6 @@ const WorkSummary: React.FC = () => {
       }
     }
   };
-
   useEffect(() => {
     fetchSummary();
   }, [period]);
@@ -73,7 +74,7 @@ const WorkSummary: React.FC = () => {
   }
 
   return (
-    <div className="p-6 pt-20">
+    <div className="p-6 pt-2">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 transition-opacity duration-300 ease-in-out">
         Work Summary
       </h2>

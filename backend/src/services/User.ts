@@ -1,4 +1,4 @@
-import { PrismaClient, User, WorkSession, Alert, ProjectAssignment } from '@prisma/client';
+import { PrismaClient, User, WorkSession, Alert, ProjectAssignment, ProjectStatus } from '@prisma/client';
 const prisma = new PrismaClient();
 
 type SettingsData = {
@@ -118,7 +118,7 @@ const userService = {
     // Default is 'day'
     return userService.getUserProductivity(userId, startDate);
   },
-
+  
   getEmployeeInsights: async (companyId: number) => {
     const users = await prisma.user.findMany({ where: { companyId } });
     return Promise.all(users.map(async user => {
@@ -174,65 +174,113 @@ const userService = {
   },
 
   getUserSettings: async (userId: number) => {
-    const user = await prisma.user.findUnique({ where: { id: userId }, include: { company: true } });
-    if (!user) return {};
-    // Get all users in the same company
-    const users = await prisma.user.findMany({
-      where: { companyId: user.companyId },
-      select: { id: true, name: true, email: true, role: true }
-    });
-    // Safely parse user.settings if it's a string, and ensure it's an object
-    let settingsObj: any = {};
-    if (typeof user.settings === 'string') {
-      try {
-        settingsObj = JSON.parse(user.settings);
-      } catch {
-        settingsObj = {};
-      }
-    } else if (typeof user.settings === 'object' && user.settings !== null) {
-      settingsObj = user.settings;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { company: true }
+  });
+
+  if (!user) return {};
+
+  // Get all users in the same company with company name
+  const rawUsers = await prisma.user.findMany({
+    where: { companyId: user.companyId },
+    
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      company: { select: { name: true } }
     }
+  });
 
-    return {
-      trackingRules: settingsObj.trackingRules || {
-        browserActivity: true,
-        appActivity: true,
-        idleTime: false,
-      },
-      notifications: settingsObj.notifications || {
-        emailLowProductivity: true,
-        inAppAlerts: false,
-        productivityThreshold: 50,
-      },
-      users,
-    };
+  const users = rawUsers.map(u => ({
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    company: u.company?.name ?? 'N/A'
+  }));
+
+  // Safely parse user.settings
+  let settingsObj: any = {};
+  if (typeof user.settings === 'string') {
+    try {
+      settingsObj = JSON.parse(user.settings);
+    } catch {
+      settingsObj = {};
+    }
+  } else if (typeof user.settings === 'object' && user.settings !== null) {
+    settingsObj = user.settings;
+  }
+
+  return {
+    trackingRules: settingsObj.trackingRules || {
+      browserActivity: true,
+      appActivity: true,
+      idleTime: false,
+    },
+    notifications: settingsObj.notifications || {
+      emailLowProductivity: true,
+      inAppAlerts: false,
+      productivityThreshold: 50,
+    },
+    users,
+  };
+},
+  
+  // Get all employees for a company
+  getEmployeesByCompany: async (companyId: number) => {
+    return prisma.user.findMany({
+      where: { companyId, role: 'EMPLOYEE' },
+      select: { id: true, name: true, email: true },
+    });
   },
-};
 
-const projectService = {
-  getAll: async () => {
+  // Get employee by ID
+  getEmployeeById: async (employeeId: number) => {
+    return prisma.user.findUnique({
+      where: { id: employeeId },
+      select: { id: true, name: true, companyId: true, role: true },
+    });
+  },
+
+  // Get all projects
+  getAllProjects: async (companyId: number) => {
     return prisma.projectAssignment.findMany({
+      where: {
+      user: { companyId },
+    },
+
       include: { user: true }
     });
   },
-  assign: async (employeeId: number, projectName: string) => {
+
+  // Assign a project
+  assignProject: async (employeeId: number, projectName: string) => {
     return prisma.projectAssignment.create({
       data: {
         userId: employeeId,
         projectName,
-        status: 'assigned'
-      }
+        status: ProjectStatus.assigned,
+      },
+      include: { user: true }
     });
   },
-  markComplete: async (id: number, githubLink: string) => {
+
+  // Mark project as complete
+  markProjectComplete: async (id: number, githubLink: string) => {
     return prisma.projectAssignment.update({
       where: { id },
       data: {
-        status: 'completed',
+        status: ProjectStatus.completed,
         githubLink
-      }
+      },
+      include: { user: true }
     });
-  }
+  },
+
 };
 
-export { userService, projectService };
+
+export { userService };

@@ -17,6 +17,7 @@ import { errorMiddleware } from './middleware/errorsMiddleware';
 import { SignUpSchema } from './schema/user';
 import UserRoutes from './routes/User';
 import ProjectRoutes from './routes/Project';
+import EmployeeRoutes from './routes/Employee';
 
 const app = express();
 app.use(cors(
@@ -31,8 +32,9 @@ app.use(router); // Use the router for handling routes
 const PORT = process.env.PORT || 3000;
 
 app.use('/api', rootRouter); // Use authentication routes under the /auth path
-app.use('api/user', UserRoutes); // Use user-specific routes under the /user path')
+app.use('/api/user', UserRoutes); // Use user-specific routes under the /user path')
 app.use('/api/projects', ProjectRoutes); // Use project-specific routes under the /projects path
+app.use('/api/employees', EmployeeRoutes);
 
 export const prisma = new PrismaClient(
   {

@@ -26,6 +26,7 @@ const AdminDashboard: React.FC = () => {
   // (Actual  AuthContext )
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const userEmail = user?.email || 'Admin';
+  const userName = user?.name || 'Admin';
 
    const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -38,6 +39,7 @@ const AdminDashboard: React.FC = () => {
       <div className={`flex-1 min-h-screen bg-gray-200 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'} ml-0`}>
 
         <AdminDashboardHeader
+          userName={userName}
           userEmail={userEmail}
           isCollapsed={isCollapsed}
         />

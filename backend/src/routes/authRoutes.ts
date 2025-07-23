@@ -6,7 +6,7 @@ import authMiddleware from "../middleware/authMiddleware";
 
 const authRoutes: Router = Router();
 
-authRoutes.post('/SignUp', errorHandler(SignUp as (req: Request, res: Response, next: NextFunction) => any)); // Route for user sign-up
+authRoutes.post('/signup', errorHandler(SignUp as (req: Request, res: Response, next: NextFunction) => any)); // Route for user sign-up
 authRoutes.post('/Login', errorHandler(Login as (req: Request, res: Response, next: NextFunction) => any)); // Route for user login
 authRoutes.get('/me', authMiddleware, errorHandler(me as (req: Request, res: Response, next: NextFunction) => any)); // Route to get the logged-in user's profile
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getProjects, assignProject, completeProject } from '../controllers/User'; // Or Project if you split controllers
+import { getProjects, assignProject, completeProject, getEmployeesByCompany } from '../controllers/User';
 import authMiddleware from '../middleware/authMiddleware';
 
 const ProjectRoutes = express.Router();
@@ -10,8 +10,10 @@ function asyncHandler(fn: any) {
   };
 }
 
-ProjectRoutes.get('/', authMiddleware, asyncHandler(getProjects));
-ProjectRoutes.post('/', authMiddleware, asyncHandler(assignProject));
-ProjectRoutes.patch('/:id/complete', authMiddleware, asyncHandler(completeProject));
+// Project endpoints
+ProjectRoutes.get('/', authMiddleware, asyncHandler(getProjects)); // GET /api/projects
+ProjectRoutes.post('/', authMiddleware, asyncHandler(assignProject)); // POST /api/projects
+ProjectRoutes.patch('/:id/complete', authMiddleware, asyncHandler(completeProject)); // PATCH /api/projects/:id/complete
+ 
 
 export default ProjectRoutes;

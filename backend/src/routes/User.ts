@@ -1,7 +1,10 @@
 //This will handele user-specific endpoints ( /api/user/activity, /api/user/stats)
 import express from 'express';
 import authMiddleware from "../middleware/authMiddleware";
-import userController from '../controllers/User';
+import userController, { getEmployeesByCompany } from '../controllers/User';
+
+
+
 
 const UserRoutes = express.Router();
 
@@ -17,5 +20,8 @@ UserRoutes.get('/reports', authMiddleware, asyncHandler(userController.getReport
 UserRoutes.get('/settings', authMiddleware, asyncHandler(userController.getSettings));
 UserRoutes.get('/alerts', authMiddleware, asyncHandler(userController.getAlerts));
 UserRoutes.put('/settings', authMiddleware, asyncHandler(userController.updateSettings));
+UserRoutes.get('/employees', authMiddleware, asyncHandler(getEmployeesByCompany));
+
+
 
 export default UserRoutes;

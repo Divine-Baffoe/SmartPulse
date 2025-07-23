@@ -7,12 +7,9 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import BackLogin from '../assets/images/BackLogin.jpg';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-/*
-To install Heroicons for React, run:
-npm install @heroicons/react
+import type { CountryData } from 'react-phone-input-2';
 
-Then, you can import icons like:
-*/
+
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
   name: '',
@@ -32,7 +29,7 @@ const [showPassword, setShowPassword] = useState(false);
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handlePhoneChange = (phone: string, country: any) => {
+  const handlePhoneChange = (phone: string, country: CountryData) => {
   setFormData({
     ...formData,
     contact: phone,
@@ -47,7 +44,7 @@ const togglePasswordVisibility = () => {
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
-    const response = await fetch('http://localhost:3000/api/auth/SignUp', {
+    const response = await fetch('http://localhost:3000/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
@@ -181,6 +178,21 @@ const togglePasswordVisibility = () => {
                   country={'gh'}
                   value={formData.contact}
                   onChange={handlePhoneChange}
+                  isValid={(value, country, countries, hiddenAreaCodes) => {
+                      // Safely narrow country type
+                      const typedCountry = country as CountryData;
+
+                      if (typedCountry.countryCode === 'gh') {
+                        const normalized = value.replace(/[^0-9]/g, ''); // remove non-digits
+                        const numberWithoutPrefix = normalized.replace(/^233/, '');
+
+                        return numberWithoutPrefix.length === 9;
+                      }
+
+                      return true;
+                    }}
+
+
                   inputProps={{
                     name: 'contact',
                     required: true,

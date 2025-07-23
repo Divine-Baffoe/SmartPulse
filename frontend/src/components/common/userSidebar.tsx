@@ -9,6 +9,7 @@ import {
   FaTimes,
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
+  FaPaperPlane,
 } from 'react-icons/fa';
 
 export interface UserSidebarProps {
@@ -107,6 +108,20 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isCollapsed, setIsCollapsed }
               >
                 <FaCalendar className="mr-2" />
                 {!isCollapsed && <span>Work Summary</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/user/dashboard/submit-project"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded-md transition-colors duration-200 ${
+                    isActive ? 'bg-primary text-white' : 'hover:bg-gray-700'
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaPaperPlane className="mr-2" />
+                {!isCollapsed && <span>Submit Project</span>}
               </NavLink>
             </li>
             <li>

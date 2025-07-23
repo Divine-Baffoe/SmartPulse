@@ -19,16 +19,41 @@ const AssignProjects: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProject, setNewProject] = useState({ employeeName: '', projectName: '' });
+  const [newProject, setNewProject] = useState<{ employeeId: string; projectName: string }>({ employeeId: '', projectName: '' });
+  const [employeeList, setEmployeeList] = useState<any[]>([]);
+  const adminData = JSON.parse(localStorage.getItem('user') || '{}');
+  const currentCompanyId = adminData.companyId;
+
+  useEffect(() => {
+    console.log('adminData:', adminData);
+    console.log('currentCompanyId:', currentCompanyId);
+  const fetchEmployees = async () => {
+    const res = await fetch(`http://localhost:3000/api/user/employees?companyId=${currentCompanyId}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
+    }
+    });
+    const employees = await res.json();
+    console.log('Fetched employees:', employees);
+    if (Array.isArray(employees)) {
+      setEmployeeList(employees);
+    } else {
+      setEmployeeList([]); // or setError('Failed to fetch employees');
+    }
+  };
+  fetchEmployees();
+}, [currentCompanyId]);
+
 
   const fetchProjects = async () => {
     try {
-              const res = await fetch('/api/projects', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
+      const res = await fetch('http://localhost:3000/api/projects', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
       const data = await res.json();
       setProjects(data);
       setLoading(false);
@@ -43,17 +68,30 @@ const AssignProjects: React.FC = () => {
   }, []);
 
   const handleAssignProject = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulate API call
-    const newEntry: Project = {
-      id: Date.now(),
-      ...newProject,
-      status: 'assigned',
-    };
-    setProjects([...projects, newEntry]);
-    setNewProject({ employeeName: '', projectName: '' });
-    setIsModalOpen(false);
-  };
+  e.preventDefault();
+  if (!newProject.employeeId) {
+    alert('Please select an employee');
+    return;
+  }
+  const res = await fetch('http://localhost:3000/api/projects', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      employeeId: Number(newProject.employeeId),
+      projectName: newProject.projectName
+    })
+  });
+  if (!res.ok) {
+    alert('Failed to assign project');
+    return;
+  }
+  fetchProjects();
+  setNewProject({ employeeId: '', projectName: '' });
+  setIsModalOpen(false);
+};
 
   const markComplete = (id: number, link: string) => {
     setProjects(
@@ -68,12 +106,11 @@ const AssignProjects: React.FC = () => {
 
   return (
     <div className="p-6 pt-2">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Assign Projects</h2>
-
+      <h2 className="text-2xl font-bold mb-2 text-gray-800">Assign Projects</h2>
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-primary text-white px-4 py-2 rounded flex items-center space-x-2 hover:bg-blue-700"
+          className="bg-primary text-white px-4 py-2 rounded flex items-center space-x-2 hover:bg-blue-700 focus:outline-none"
           data-tooltip-id="assign-tooltip"
           data-tooltip-content="Assign a new project"
         >
@@ -82,7 +119,6 @@ const AssignProjects: React.FC = () => {
         </button>
         <ReactTooltip id="assign-tooltip" className="z-50" />
       </div>
-
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded shadow">
           <thead className="bg-gray-100">
@@ -141,7 +177,6 @@ const AssignProjects: React.FC = () => {
           </tbody>
         </table>
       </div>
-
       {/* Assign Modal */}
       <Modal
         isOpen={isModalOpen}
@@ -151,19 +186,26 @@ const AssignProjects: React.FC = () => {
       >
         <h3 className="text-lg font-bold mb-4">Assign New Project</h3>
         <form onSubmit={handleAssignProject} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Employee Name"
-            value={newProject.employeeName}
-            onChange={(e) => setNewProject({ ...newProject, employeeName: e.target.value })}
+          
+          <label htmlFor="employeeId">Employee</label>
+          <select
+            id="employeeId"
+            name="employeeId"
+            value={newProject.employeeId}
+            onChange={e => setNewProject({ ...newProject, employeeId: e.target.value })}
             required
             className="w-full border p-2 rounded"
-          />
+          >
+            <option value="">Select employee</option>
+            {employeeList.map(emp => (
+              <option key={emp.id} value={emp.id}>{emp.name}</option>
+            ))}
+          </select>
           <input
             type="text"
             placeholder="Project Name"
             value={newProject.projectName}
-            onChange={(e) => setNewProject({ ...newProject, projectName: e.target.value })}
+            onChange={e => setNewProject({ ...newProject, projectName: e.target.value })}
             required
             className="w-full border p-2 rounded"
           />

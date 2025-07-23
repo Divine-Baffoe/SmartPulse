@@ -80,7 +80,8 @@ const Login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Find user by email
         const user = await prismaClient.user.findUnique({
-            where: { email }
+            where: { email }, 
+            include: { company: true }
         });
 
         if (!user) {
@@ -102,7 +103,24 @@ const Login = async (req: Request, res: Response, next: NextFunction) => {
             { expiresIn: '1h' }
         );
 
-        return res.status(200).json({ success: true, message: 'Login successful', user: { role: user.role }, token });
+        // Return user data with all needed fields
+        return res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                companyId: user.companyId,
+                companyName: user.company.name,
+                role: user.role,
+                contact: user.contact,
+                countrycode: user.countrycode,
+                // add any other fields you need here
+            },
+            token
+        });
+        
     } catch (error) {
         next(new BadRequestException('Login failed', ErrorCode.LOGIN_FAILED));
     }

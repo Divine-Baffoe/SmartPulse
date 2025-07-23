@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
+import { userService } from '../services/User';
+import { PrismaClient } from '@prisma/client';
 
-
-import { userService, projectService } from '../services/User';
+const prisma = new PrismaClient();
 
 const userController = {
   getStats: async (req: Request, res: Response) => {
@@ -72,32 +73,69 @@ const userController = {
       res.status(500).json({ error: 'Failed to update settings' });
     }
   },
+  
+
+}
+
+
+export const getEmployeesByCompany = async (req: Request, res: Response) => {
+  const companyId = parseInt(req.query.companyId as string);
+  if (!companyId || isNaN(companyId)) {
+    return res.status(400).json({ error: 'Invalid company ID' });
+  }
+  try {
+    const employees = await userService.getEmployeesByCompany(companyId);
+    res.json(employees);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch employees' });
+  }
 };
 
 export const getProjects = async (req: Request, res: Response) => {
-  const projects = await projectService.getAll();
-  res.json(
-    projects.map((p: any) => ({
-      id: p.id,
-      employeeName: p.user.name,
-      projectName: p.projectName,
-      githubLink: p.githubLink,
-      status: p.status,
-    }))
-  );
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const companyId = req.user.companyId;
+    const projects = await userService.getAllProjects(companyId);
+    res.json(
+      projects.map((p: any) => ({
+        id: p.id,
+        employeeName: p.user.name,
+        projectName: p.projectName,
+        githubLink: p.githubLink,
+        status: p.status,
+      }))
+    );
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
 };
 
 export const assignProject = async (req: Request, res: Response) => {
   const { employeeId, projectName } = req.body;
-  const project = await projectService.assign(employeeId, projectName);
+  if (!employeeId || !projectName) {
+    return res.status(400).json({ error: 'Missing employeeId or projectName' });
+  }
+  const employee = await userService.getEmployeeById(employeeId);
+  if (!employee) {
+    return res.status(404).json({ error: 'Employee not found in company database' });
+  }
+  const project = await userService.assignProject(employeeId, projectName);
   res.status(201).json(project);
 };
 
 export const completeProject = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { githubLink } = req.body;
-  const project = await projectService.markComplete(Number(id), githubLink);
-  res.json(project);
+  try {
+    const { id } = req.params;
+    const { githubLink } = req.body;
+    const project = await userService.markProjectComplete(Number(id), githubLink);
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to complete project' });
+  }
 };
 
+
 export default userController;
+

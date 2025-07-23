@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaUsers, FaUser, FaFileAlt, FaCog, FaBell, FaBars, FaTimes, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
+import { FaUsers, FaUser, FaFileAlt, FaCog, FaBell, FaBars, FaTimes, FaAngleDoubleLeft, FaAngleDoubleRight, FaPaperPlane } from 'react-icons/fa';
 interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -109,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
                 }
                 onClick={() => setIsOpen(false)}
               >
-                <FaUsers className="mr-2" />
+                <FaPaperPlane className="mr-2" />
                 {!isCollapsed && <span>Project Assignment</span>}
               </NavLink>
             </li>

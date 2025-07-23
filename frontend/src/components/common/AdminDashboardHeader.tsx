@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 
 interface Props {
+  userName?: string;
   userEmail: string;
   userPhotoUrl?: string;
   isCollapsed: boolean;
 }
 
-const AdminDashboardHeader: React.FC<Props> = ({ userEmail, userPhotoUrl, isCollapsed }) => {
+const AdminDashboardHeader: React.FC<Props> = ({userName, userEmail, userPhotoUrl, isCollapsed }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const AdminDashboardHeader: React.FC<Props> = ({ userEmail, userPhotoUrl, isColl
     >
       {/* Left Section: Welcome message and time hidden in mobile view  */}
       <div className="hidden md:block">
-        <h1 className="text-xl font-semibold text-primary mb-1">Welcome back, Admin!</h1>
+        <h1 className="text-xl font-semibold text-primary mb-1">Welcome back, {userName}</h1>
         <p className="text-sm text-gray-500">
           {currentTime.toLocaleDateString(undefined, {
             weekday: 'long',
@@ -62,7 +63,7 @@ const AdminDashboardHeader: React.FC<Props> = ({ userEmail, userPhotoUrl, isColl
             )}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 transition duration-200 ease-in-out z-50">
+            <div className="absolute right-0 mt-2 w-60 bg-white shadow-lg rounded-md py-2 transition duration-200 ease-in-out z-50">
               <div className="px-4 py-2 border-b">
                 <span className="block text-gray-700 text-sm">{userEmail}</span>
               </div>

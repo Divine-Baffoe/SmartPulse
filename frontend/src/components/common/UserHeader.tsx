@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBars, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 
 interface UserHeaderProps {
+  userName?: string;
   userEmail: string;
   userPhotoUrl?: string;
   isCollapsed: boolean;
@@ -10,6 +11,7 @@ interface UserHeaderProps {
 }
 
 const UserHeader: React.FC<UserHeaderProps> = ({
+  userName,
   userEmail,
   userPhotoUrl,
   isCollapsed,
@@ -44,7 +46,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({
           <FaBars size={20} />
         </button>
         <div className="hidden md:block">
-          <h1 className="text-xl font-semibold text-primary mb-1">Welcome back! {userEmail.split('@')[0]}</h1>
+          <h1 className="text-xl font-semibold text-primary mb-1">Welcome back! {userName}</h1>
           <p className="text-sm text-gray-500">
             {currentTime.toLocaleDateString(undefined, {
               weekday: 'long',

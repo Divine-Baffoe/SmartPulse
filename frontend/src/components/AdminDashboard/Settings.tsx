@@ -12,6 +12,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  company?: string;
   role: 'employee' | 'admin';
 }
 
@@ -29,30 +30,7 @@ interface SettingsData {
   users: User[];
 }
 
-// Mock data (replace with API call)
-{/*const fetchMockSettings = (): Promise<SettingsData> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () =>
-        resolve({
-          trackingRules: {
-            browserActivity: true,
-            appActivity: true,
-            idleTime: false,
-          },
-          notifications: {
-            emailLowProductivity: true,
-            inAppAlerts: false,
-            productivityThreshold: 50,
-          },
-          users: [
-            { id: 1, name: 'Maureen Semenhyia', email: 'maureen@example.com', role: 'employee' },
-            { id: 2, name: 'Phoebe McBrown', email: 'phoebe@example.com', role: 'admin' },
-          ],
-        }),
-      1000,
-    ),
-  );*/}
+
 
 const Settings: React.FC = () => {
   const [settings, setSettings] = useState<SettingsData | null>(null);
@@ -60,7 +38,7 @@ const Settings: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState<User>({ id: 0, name: '', email: '', role: 'employee' });
+  const [newUser, setNewUser] = useState<User>({ id: 0, name: '', email: '', role: 'employee', company: '' });
   const [userToRemove, setUserToRemove] = useState<number | null>(null);
 
   // Fetch settings with retry
@@ -97,14 +75,14 @@ const Settings: React.FC = () => {
     if (!settings) return;
     try {
       // Simulate API call (replace with actual endpoint)
-      // await fetch('/api/admin/settings', {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${localStorage.getItem('token')}`,
-      //   },
-      //   body: JSON.stringify(settings),
-      // });
+      await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(settings),
+      });
       console.log('Settings saved:', settings);
     } catch (err) {
       setError(
@@ -236,6 +214,7 @@ const Settings: React.FC = () => {
                   <th className="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
                   <th className="p-3 text-left text-sm font-semibold text-gray-700">Email</th>
                   <th className="p-3 text-left text-sm font-semibold text-gray-700">Role</th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700">Company</th>
                 </tr>
               </thead>
               <tbody>
@@ -251,6 +230,7 @@ const Settings: React.FC = () => {
                       <td className="p-3 text-gray-700">{user.name}</td>
                       <td className="p-3 text-gray-700">{user.email}</td>
                       <td className="p-3 text-gray-700">{user.role}</td>
+                      <td className="p-3 text-gray-700">{user.company || 'N/A'}</td>
                     </tr>
                   ))
                 )}
