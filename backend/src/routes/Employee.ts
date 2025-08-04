@@ -12,6 +12,8 @@ function asyncHandler(fn: any) {
     };
 }
 
+EmployeeRoutes.get('/stats', authMiddleware, asyncHandler(employeeController.getUserStats));
+EmployeeRoutes.get('/stress', authMiddleware, asyncHandler(employeeController.getUserStress));
 EmployeeRoutes.get('/work-summary', authMiddleware, asyncHandler(employeeController.getWorkSummary));
 EmployeeRoutes.get('/settings', authMiddleware, asyncHandler(employeeController.getSettings));
 EmployeeRoutes.put('/settings', authMiddleware, asyncHandler(employeeController.updateSettings));

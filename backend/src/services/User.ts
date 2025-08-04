@@ -223,7 +223,7 @@ const userService = {
     notifications: settingsObj.notifications || {
       emailLowProductivity: true,
       inAppAlerts: false,
-      productivityThreshold: 50,
+      productivityThreshold: 40,
     },
     users,
   };
@@ -257,12 +257,14 @@ const userService = {
   },
 
   // Assign a project
-  assignProject: async (employeeId: number, projectName: string) => {
+  assignProject: async (employeeId: number, projectName: string, dueDate: string) => {
     return prisma.projectAssignment.create({
       data: {
         userId: employeeId,
         projectName,
         status: ProjectStatus.assigned,
+        dueDate:new Date(dueDate),
+        
       },
       include: { user: true }
     });
@@ -270,17 +272,47 @@ const userService = {
 
   // Mark project as complete
   markProjectComplete: async (id: number, githubLink: string) => {
+  
     return prisma.projectAssignment.update({
       where: { id },
       data: {
+        githubLink,
         status: ProjectStatus.completed,
-        githubLink
+        completedAt: new Date()
       },
       include: { user: true }
     });
   },
 
+
+  deleteProject: async (projectId: number) => {
+    return prisma.projectAssignment.delete({
+      where: { id: projectId },
+      include: { user: true }
+    });
+  },
+
+  rejectProject: async (projectId: number) => {
+    return prisma.projectAssignment.update({
+      where: { id: projectId },
+      data: { status: ProjectStatus.rejected },
+      include: { user: true }
+    });
+  },
+
+  updateProjectDueDate: async (projectId: number, dueDate: string) => {
+  return prisma.projectAssignment.update({
+    where: { id: projectId },
+    data: { dueDate: new Date(dueDate) },
+    include: { user: true }
+  });
+},
+
+
 };
+
+   
+  
 
 
 export { userService };

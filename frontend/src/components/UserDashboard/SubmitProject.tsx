@@ -4,8 +4,9 @@ import { FaCheckCircle, FaLink } from 'react-icons/fa';
 interface Project {
   id: number;
   projectName: string;
-  status: 'assigned' | 'completed';
+  status: 'assigned' | 'submitted'| 'rejected';
   githubLink?: string;
+  dueDate?: string;
 }
 
 const EmployeeProjects: React.FC = () => {
@@ -16,6 +17,7 @@ const EmployeeProjects: React.FC = () => {
   const employeeId = userData.id;
   console.log('userData:', userData);
   console.log('employeeId:', employeeId);
+  console.log('ProjectId', projects.map(p => p.id));
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -46,7 +48,7 @@ const EmployeeProjects: React.FC = () => {
     });
     if (res.ok) {
       setProjects(projects.map(p =>
-        p.id === projectId ? { ...p, status: 'completed', githubLink } : p
+        p.id === projectId ? { ...p, status: 'submitted', githubLink } : p
       ));
     } else {
       alert('Failed to submit project');
@@ -66,6 +68,7 @@ const EmployeeProjects: React.FC = () => {
             <th className="p-3 text-left">Status</th>
             <th className="p-3 text-left">GitHub Link</th>
             <th className="p-3 text-left">Actions</th>
+            <th className="p-3 text-left">Due Date</th>
           </tr>
         </thead>
         <tbody>
@@ -74,7 +77,7 @@ const EmployeeProjects: React.FC = () => {
               <td className="p-3">{project.projectName}</td>
               <td className="p-3">
                 <span className={`text-xs px-2 py-1 rounded-full ${
-                  project.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                  project.status === 'submitted' ? 'bg-green-100 text-green-900' : 'bg-yellow-100 text-yellow-700'
                 }`}>
                   {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
                 </span>
@@ -96,6 +99,9 @@ const EmployeeProjects: React.FC = () => {
                     <FaCheckCircle className="inline mr-1" /> Submit Project
                   </button>
                 )}
+              </td>
+              <td className="p-3">
+                {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : '—'}
               </td>
             </tr>
           ))}

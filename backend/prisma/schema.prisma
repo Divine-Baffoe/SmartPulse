@@ -21,7 +21,10 @@ model ProjectAssignment {
   user        User   @relation("UserToProjectAssignments", fields: [userId], references: [id])
   projectName String
   githubLink  String?
-  status      ProjectStatus // 'assigned' or 'completed'
+  status      ProjectStatus // 'assigned' or 'completed' or 'rejected'
+  dueDate     DateTime? // Due date for the project
+  submittedAt DateTime? // When the project was submitted 
+  completedAt DateTime? // When the project was completed
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -67,14 +70,15 @@ model WorkSession {
   user           User      @relation(fields: [userId], references: [id])
   startTime      DateTime
   endTime        DateTime?
+  AppName        String?   // Optional: Name of the app used
   productive     Int       // In minutes
   unproductive   Int       // In minutes
   undefined      Int       // In minutes
   idleTime       Int       // In minutes
-
+  activeTime     Int       // In minutes
   appsUsed       Json      // Array of { name: string, duration: number }
   websitesUsed   Json      // Array of { name: string, duration: number }
-
+  appSwitches     Int       // Number of app switches
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }
@@ -97,5 +101,7 @@ enum AlertType {
 
 enum ProjectStatus{
   assigned
+  submitted
   completed
+  rejected
 }

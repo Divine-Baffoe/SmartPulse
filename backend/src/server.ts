@@ -18,18 +18,43 @@ import { SignUpSchema } from './schema/user';
 import UserRoutes from './routes/User';
 import ProjectRoutes from './routes/Project';
 import EmployeeRoutes from './routes/Employee';
+import http from 'http'; // Import HTTP module for creating the server
+import {Server,Socket} from 'socket.io'; // Import Socket.IO for real-time communication
 
 const app = express();
-app.use(cors(
-  { origin: ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true, } // Allow CORS for the specified origin
-));
+const server = http.createServer(app);
+app.use(cors({
+  origin: 'http://localhost:5173', // ✅ Your frontend origin
+  credentials: true,               // ✅ Allow cookies/auth headers
+}));
+// Initialize Socket.IO with the server
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    credentials: true,
+  },
+});
+
+io.on('connection', (socket: Socket) => {
+  console.log('🟢 Admin connected:', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('🔴 Admin disconnected:', socket.id);
+  });
+});
+
+export { io };
+
+
+
 app.use(compression()); // Use compression middleware to compress responses
 app.use(BodyParser.json()); // Use body-parser to parse JSON request bodies
 app.use(CookieParser()); // Use cookie-parser to handle cookies
 app.use(express.json());
 app.use(router); // Use the router for handling routes
 const PORT = process.env.PORT || 3000;
+
+
 
 app.use('/api', rootRouter); // Use authentication routes under the /auth path
 app.use('/api/user', UserRoutes); // Use user-specific routes under the /user path')
@@ -68,9 +93,7 @@ app.use(errorMiddleware)
 
 // Dummy connectToDb function for demonstration; replace with actual implementation or import as needed
 
-
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-
-  connectToDatabase()
+  connectToDatabase();
 });

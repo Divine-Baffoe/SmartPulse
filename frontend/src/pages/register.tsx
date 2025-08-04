@@ -10,6 +10,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import type { CountryData } from 'react-phone-input-2';
 
 
+
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
   name: '',
@@ -21,7 +22,7 @@ const Register: React.FC = () => {
   termsAgreed: false,   // Change from 'terms' to 'termsAgreed'
 });
 const Navigate = useNavigate();
-
+const [phoneError, setPhoneError] = useState<string | null>(null);
 const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,13 +30,38 @@ const [showPassword, setShowPassword] = useState(false);
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
+  {/* const handlePhoneChange = (phone: string, country: CountryData) => {
+    try {
+      const phoneNumber = parsePhoneNumber(phone, country.countryCode.toUpperCase());
+      if (phoneNumber && phoneNumber.isValid()) {
+        setFormData({
+          ...formData,
+          contact: phoneNumber.nationalNumber,
+          countrycode: `+${country.dialCode}`,
+        });
+        setPhoneError(null);
+      } else {
+        setPhoneError('Invalid phone number');
+      }
+    } catch {
+      setPhoneError('Invalid phone number format');
+      setFormData({
+        ...formData,
+        contact: phone.replace(`+${country.dialCode}`, ''),
+        countrycode: `+${country.dialCode}`,
+      });
+    }
+  }; */}
+
   const handlePhoneChange = (phone: string, country: CountryData) => {
-  setFormData({
-    ...formData,
-    contact: phone,
-    countrycode: `+${country.dialCode}`,
-  });
-};
+    setFormData({
+      ...formData,
+      contact: phone.replace(`+${country.dialCode}`, ''),
+      countrycode: `+${country.dialCode}`,
+    });
+    setPhoneError(null);
+  };
+
 const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -126,7 +152,7 @@ const togglePasswordVisibility = () => {
                   Password
                 </label>
                 <div className="relative">
-                        <input
+                <input
                           type={showPassword ? 'text':'password'}
                           id="password"
                           name="password"
@@ -176,23 +202,8 @@ const togglePasswordVisibility = () => {
                 </label>
                 <PhoneInput
                   country={'gh'}
-                  value={formData.contact}
+                  value={formData.countrycode + formData.contact}
                   onChange={handlePhoneChange}
-                  isValid={(value, country, countries, hiddenAreaCodes) => {
-                      // Safely narrow country type
-                      const typedCountry = country as CountryData;
-
-                      if (typedCountry.countryCode === 'gh') {
-                        const normalized = value.replace(/[^0-9]/g, ''); // remove non-digits
-                        const numberWithoutPrefix = normalized.replace(/^233/, '');
-
-                        return numberWithoutPrefix.length === 9;
-                      }
-
-                      return true;
-                    }}
-
-
                   inputProps={{
                     name: 'contact',
                     required: true,
@@ -206,14 +217,15 @@ const togglePasswordVisibility = () => {
                   enableSearch={true}
                   containerStyle={{ position: 'relative' }}
                   buttonStyle={{
-                    paddingRight: '8px', // Add space between flag and country code
+                    paddingRight: '8px',
                     background: 'white',
                     border: 'none',
                   }}
                   inputStyle={{
-                    paddingLeft: '60px', // Ensure enough space for flag and code
+                    paddingLeft: '60px',
                   }}
                 />
+                {phoneError && <p className="mt-1 text-sm text-red-500">{phoneError}</p>}
               </div>
 
               {/* Terms and Conditions */}

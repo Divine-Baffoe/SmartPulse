@@ -16,6 +16,9 @@ import {
   Sector
  
 } from 'recharts';
+import socket from '../../socket'; // Import your socket instance
+import { toast } from 'react-toastify'; // If you're using toast notifications
+
 
 // Define TypeScript interfaces
 
@@ -271,6 +274,8 @@ const TeamOverview: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
+  
+  
 
   // Fetch data with retry mechanism
   const fetchStats = async (retries = 2) => {
@@ -327,6 +332,20 @@ const TeamOverview: React.FC = () => {
   useEffect(() => {
     fetchStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    socket.on('project:submitted', (data) => {
+    console.log('📦 Project submitted:', data);
+
+    // Optional: show toast
+    toast.success(`${data.employeeName} submitted ${data.projectName}`);
+
+    // Optional: refetch stats to reflect new data
+    fetchStats();
+  });
+    return () => {
+    socket.off('project:submitted');
+  };
+
   }, []);
 
   const handleStatClick = (stat: string) => {

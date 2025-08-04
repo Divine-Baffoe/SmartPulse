@@ -38,6 +38,7 @@ interface PieChartData {
   percentage: number;
 }
 
+
 // Mock data (replace with API call)
 const fetchMockStats = (userId: number, period: string): Promise<ProductivityStats> =>
   new Promise((resolve) =>
@@ -184,13 +185,19 @@ const MyProductivity: React.FC = () => {
   const [period, setPeriod] = useState<'day' | 'week' | 'month'>('day');
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
 
-  // Mock user (replace with auth context)
-  const user: User = { id: 1, name: 'Maureen Semenhyia', companyId: 1 };
+
 
   // Fetch stats with retry
   const fetchStats = async (retries = 3): Promise<void> => {
     try {
-      const data = await fetchMockStats(user.id, period);
+      const response = await fetch(`http://localhost:3000/api/employees/stats?period=${period}`, {
+        headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+                }
+      });
+      if (!response.ok) throw new Error('Failed to fetch productivity stats');
+      const data = await response.json();
       setStats(data);
       setLoading(false);
     } catch (err) {

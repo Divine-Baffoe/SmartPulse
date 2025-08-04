@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaUsers, FaUser, FaFileAlt, FaCog, FaBell, FaBars, FaTimes, FaAngleDoubleLeft, FaAngleDoubleRight, FaPaperPlane } from 'react-icons/fa';
+import socket from '../../socket';
 interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
   const [isOpen, setIsOpen] = useState(false); // Mobile toggle
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+  const [projectNotificationCount, setProjectNotificationCount] = useState<number>(0);
+
+  useEffect(() => {
+  console.log('Sidebar mounted, socket:', socket.connected);
+   
+  // Listen for project submission notifications
+  if (!socket) return;
+
+  socket.on('connect', () => {
+    console.log('Socket connected:', socket.id);
+  });
+
+  socket.on('project:submitted', (data) => {
+    alert(`New project submitted: ${data.projectName} by ${data.employeeName}`);
+    //console.log('Received project:submitted', data);
+    //setProjectNotificationCount(prev => prev + 1);
+  });
+
+  return () => {
+    socket.off('project:submitted');
+  };
+}, [socket]);
+
 
   return (
     <>
@@ -107,10 +132,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
                     isActive ? 'bg-primary text-white' : 'hover:bg-gray-700'
                   }`
                 }
-                onClick={() => setIsOpen(false)}
+                onClick={() =>{ setIsOpen(false);
+                setProjectNotificationCount(0);
+                }}
+            
               >
                 <FaPaperPlane className="mr-2" />
-                {!isCollapsed && <span>Project Assignment</span>}
+                {!isCollapsed && (
+                  <span className="flex items-center justify-between w-full">
+                    Project Assignment
+                    {projectNotificationCount > 0 && (
+                      <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        {projectNotificationCount}
+                      </span>
+                    )}
+                  </span> 
+                )}
+
               </NavLink>
             </li>
             

@@ -61,36 +61,38 @@ const StressInsights: React.FC = () => {
   const [stressRating, setStressRating] = useState<number>(1);
   const [showBreakAlert, setShowBreakAlert] = useState(false);
 
-  // Mock user (replace with auth context)
-  const user: User = { id: 1, name: 'Maureen Semenhyia', companyId: 1 };
+
 
   // Fetch stress data with retry
-  const fetchStress = async (retries = 3): Promise<void> => {
-    try {
-      const data = await fetchMockStress(user.id, period);
-      setStress(data);
-      setLoading(false);
-      // Show break alert if stress >60% or work >3 hours
-      if (data.stressLevel > 60 || data.workDuration > 3) {
-        setShowBreakAlert(true);
-      }
-    } catch (err) {
-      if (retries > 0) {
-        setTimeout(() => fetchStress(retries - 1), 1000);
-      } else {
-        setError(
-          typeof err === 'object' && err !== null && 'message' in err
-            ? String((err as { message: unknown }).message)
-            : 'Failed to load stress insights'
-        );
+  const fetchStats = async (retries = 3): Promise<void> => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/employees/stress?period=${period}`, {
+          headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                  'Content-Type': 'application/json'
+                  }
+        });
+        if (!response.ok) throw new Error('Failed to fetch productivity stats');
+        const data = await response.json();
+        setStress(data);
         setLoading(false);
+      } catch (err) {
+        if (retries > 0) {
+          setTimeout(() => fetchStats(retries - 1), 1000);
+        } else {
+          setError(
+            typeof err === 'object' && err !== null && 'message' in err
+              ? String((err as { message?: unknown }).message)
+              : 'Failed to load productivity stats'
+          );
+          setLoading(false);
+        }
       }
-    }
-  };
-
-  useEffect(() => {
-    fetchStress();
-  }, [period]);
+    };
+  
+    useEffect(() => {
+      fetchStats();
+    }, [period]);
 
   const handleReportSubmit = (e: React.FormEvent) => {
     e.preventDefault();

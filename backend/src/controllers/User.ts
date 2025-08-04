@@ -91,20 +91,27 @@ export const getEmployeesByCompany = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getProjects = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+    
     const companyId = req.user.companyId;
     const projects = await userService.getAllProjects(companyId);
+    //console.log('Raw projectAssignment objects:', projects);
+
     res.json(
+      
       projects.map((p: any) => ({
         id: p.id,
         employeeName: p.user.name,
         projectName: p.projectName,
         githubLink: p.githubLink,
         status: p.status,
+        dueDate: p.dueDate ? p.dueDate.toISOString() : null,
+        submittedAt: p.submittedAt ? p.submittedAt.toISOString() : null,
       }))
     );
   } catch (error) {
@@ -113,7 +120,7 @@ export const getProjects = async (req: Request, res: Response) => {
 };
 
 export const assignProject = async (req: Request, res: Response) => {
-  const { employeeId, projectName } = req.body;
+  const { employeeId, projectName, dueDate } = req.body;
   if (!employeeId || !projectName) {
     return res.status(400).json({ error: 'Missing employeeId or projectName' });
   }
@@ -121,7 +128,7 @@ export const assignProject = async (req: Request, res: Response) => {
   if (!employee) {
     return res.status(404).json({ error: 'Employee not found in company database' });
   }
-  const project = await userService.assignProject(employeeId, projectName);
+  const project = await userService.assignProject(employeeId, projectName, dueDate);
   res.status(201).json(project);
 };
 
@@ -129,13 +136,45 @@ export const completeProject = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { githubLink } = req.body;
-    const project = await userService.markProjectComplete(Number(id), githubLink);
+    //const submittedAt = new Date(); // Automatically set to current date/time, {/*new Date(submittedAt)*/}
+    const project = await userService.markProjectComplete(Number(id), githubLink );
     res.json(project);
   } catch (error) {
     res.status(500).json({ error: 'Failed to complete project' });
   }
 };
 
+export const setDueDate = async (req: Request, res: Response) => {
+  const {  projectId, dueDate } = req.body;
+  if (!projectId || !dueDate) {
+    return res.status(400).json({ error: 'Missing projectId or dueDate' });
+  } 
+  try {
+    const project = await userService.updateProjectDueDate(projectId, dueDate);
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to set due date' });
+  }
+};
 
+export const deleteProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  try {
+    const project = await userService.deleteProject(Number(projectId));
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+};
+
+export const rejectProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  try {
+    const project = await userService.rejectProject(Number(projectId));
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reject project' });
+  }
+};
 export default userController;
 
