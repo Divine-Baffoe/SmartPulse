@@ -107,11 +107,11 @@ const EmployeeInsight: React.FC = () => {
 
           <thead>
             <tr className="bg-[#f8f9fa]">
-              <th className="p-3 text-left text-xl font-bold text-black bg-white/30 backdrop-blur-md border border-white/20">Employee</th>
-              <th className="p-3 text-left text-xl font-bold text-black bg-white/30 backdrop-blur-md border border-white/20">Time Worked</th>
-              <th className="p-3 text-left text-xl font-bold text-black bg-white/30 backdrop-blur-md border border-white/20">Average Activity</th>
-              <th className="p-3 text-left text-xl font-bold text-black bg-white/30 backdrop-blur-md border border-white/20">Productive Time</th>
-              <th className="p-3 text-left text-xl font-bold text-black bg-white/30 backdrop-blur-md border border-white/20">Idle Time</th>
+              <th className="p-3 text-left text-sm font-semibold text-gray-700 bg-white/30 backdrop-blur-md border border-white/20">👤 Employee</th>
+              <th className="p-3 text-left text-sm font-semibold text-gray-700 bg-white/30 backdrop-blur-md border border-white/20">⏱️ Time Worked</th>
+              <th className="p-3 text-left text-sm font-semibold text-gray-700 bg-white/30 backdrop-blur-md border border-white/20">📈 Average Activity</th>
+              <th className="p-3 text-left text-sm font-semibold text-gray-700 bg-white/30 backdrop-blur-md border border-white/20">💼 Productive Time</th>
+              <th className="p-3 text-left text-sm font-semibold text-gray-700 bg-white/30 backdrop-blur-md border border-white/20">🛌 Idle Time</th>
             </tr>
           </thead>
           <tbody>

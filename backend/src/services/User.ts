@@ -257,13 +257,14 @@ const userService = {
   },
 
   // Assign a project
-  assignProject: async (employeeId: number, projectName: string, dueDate: string) => {
+  assignProject: async (employeeId: number, projectName: string, dueDate: string, projectDescription: string) => {
     return prisma.projectAssignment.create({
       data: {
         userId: employeeId,
         projectName,
         status: ProjectStatus.assigned,
         dueDate:new Date(dueDate),
+        projectDescription,
         
       },
       include: { user: true }

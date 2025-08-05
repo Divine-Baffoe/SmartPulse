@@ -258,6 +258,7 @@ logUserActivity: async (userId: number, activities: any[]) => {
       select: {
         id: true,
         projectName: true,
+        projectDescription: true,
         status: true,
         githubLink: true,
         dueDate: true,

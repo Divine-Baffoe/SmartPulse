@@ -74,8 +74,7 @@ const Settings: React.FC = () => {
   const handleSaveSettings = async () => {
     if (!settings) return;
     try {
-      // Simulate API call (replace with actual endpoint)
-      await fetch('/api/admin/settings', {
+     const res = await fetch('http://localhost:3000/api/user/update-settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -83,15 +82,15 @@ const Settings: React.FC = () => {
         },
         body: JSON.stringify(settings),
       });
-      console.log('Settings saved:', settings);
+     if (!res.ok) {
+            setError('Failed to save settings');
+            return;
+        }
+        alert('Settings saved successfully');
     } catch (err) {
-      setError(
-        typeof err === 'object' && err !== null && 'message' in err
-          ? String((err as { message: unknown }).message)
-          : 'Failed to save settings'
-      );
+        setError('Failed to save settings');
     }
-  };
+    };
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -211,10 +210,10 @@ const Settings: React.FC = () => {
             <table className="min-w-full bg-gray-50 rounded-lg">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                  <th className="p-3 text-left text-sm font-semibold text-gray-700">Email</th>
-                  <th className="p-3 text-left text-sm font-semibold text-gray-700">Role</th>
-                  <th className="p-3 text-left text-sm font-semibold text-gray-700">Company</th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700">🧑‍💼 Name</th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700">📧 Email</th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700">🎯 Role</th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700">🏢 Company</th>
                 </tr>
               </thead>
               <tbody>

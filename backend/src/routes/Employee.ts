@@ -16,7 +16,7 @@ EmployeeRoutes.get('/stats', authMiddleware, asyncHandler(employeeController.get
 EmployeeRoutes.get('/stress', authMiddleware, asyncHandler(employeeController.getUserStress));
 EmployeeRoutes.get('/work-summary', authMiddleware, asyncHandler(employeeController.getWorkSummary));
 EmployeeRoutes.get('/settings', authMiddleware, asyncHandler(employeeController.getSettings));
-EmployeeRoutes.put('/settings', authMiddleware, asyncHandler(employeeController.updateSettings));
+EmployeeRoutes.put('/update-settings', authMiddleware, asyncHandler(employeeController.updateSettings));
 EmployeeRoutes.get('/projects', authMiddleware, asyncHandler(getEmployeeProjects));
 EmployeeRoutes.patch('/projects/:id/submit', authMiddleware, asyncHandler(submitProject));
 

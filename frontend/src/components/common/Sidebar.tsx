@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
                 <FaPaperPlane className="mr-2" />
                 {!isCollapsed && (
                   <span className="flex items-center justify-between w-full">
-                    Project Assignment
+                    Project 
                     {projectNotificationCount > 0 && (
                       <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                         {projectNotificationCount}

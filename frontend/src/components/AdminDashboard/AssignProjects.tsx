@@ -1,8 +1,10 @@
 // src/components/AdminDashboard/AssignProjects.tsx
-import React, { useState, useEffect } from 'react';
-import { FaPlus, FaCheckCircle, FaLink, FaTrashAlt } from 'react-icons/fa';
+import React, { useState, useEffect,  } from 'react';
+import { FaPlus, FaLink, FaTrashAlt } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+import { useNavigate } from 'react-router-dom';
+
 
 Modal.setAppElement('#root');
 
@@ -14,20 +16,21 @@ interface Project {
   status: 'assigned' | 'submitted' | 'completed' | 'rejected';
   dueDate?: string; //  field for due date
   submittedAt?: string; //field for received date
+  projectDescription?: string; // field for project description
 }
 
 const AssignProjects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProject, setNewProject] = useState<{ employeeId: string; projectName: string, dueDate: string }>({ employeeId: '', projectName: '', dueDate: ''});
+  const [modalProject, setModalProject] = useState<Project | null>(null);
   const [employeeList, setEmployeeList] = useState<any[]>([]);
   const adminData = JSON.parse(localStorage.getItem('user') || '{}');
   const currentCompanyId = adminData.companyId;
  
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
+  const navigate = useNavigate();
 const openProjectModal = (project: Project) => {
   setSelectedProject(project);
 };
@@ -81,7 +84,7 @@ console.log("Project Data", projects);
     fetchProjects();
   }, []);
 
-  const handleAssignProject = async (e: React.FormEvent) => {
+  {/*const handleAssignProject = async (e: React.FormEvent) => {
   e.preventDefault();
   if (!newProject.employeeId) {
     alert('Please select an employee');
@@ -106,7 +109,7 @@ console.log("Project Data", projects);
   fetchProjects();
   setNewProject({ employeeId: '', projectName: '', dueDate: ''});
   setIsModalOpen(false);
-};
+}; */}
 
   const markComplete = async (id: number, link: string) => {
   try {
@@ -177,7 +180,7 @@ console.log("Project Data", projects);
       <h2 className="text-2xl font-bold mb-2 text-gray-800">Assign Projects</h2>
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => navigate('/admin/dashboard/assign-project')}
           className="bg-primary text-white px-4 py-2 rounded flex items-center space-x-2 hover:bg-blue-700 focus:outline-none"
           data-tooltip-id="assign-tooltip"
           data-tooltip-content="Assign a new project"
@@ -191,19 +194,26 @@ console.log("Project Data", projects);
         <table className="min-w-full bg-white rounded shadow">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-3 text-left text-sm font-semibold">Employee</th>
-              <th className="p-3 text-left text-sm font-semibold">Project</th>
-              <th className="p-3 text-left text-sm font-semibold">Status</th>
-              <th className="p-3 text-left text-sm font-semibold">Action</th>
-              <th className="p-3 text-left text-sm font-semibold">Due Date</th>
-              <th className="p-3 text-left text-sm font-semibold">Delete</th>
+              <th className="p-3 text-left text-sm font-semibold">👤 Employee</th>
+              <th className="p-3 text-left text-sm font-semibold">📌 Project</th>
+              <th className="p-3 text-left text-sm font-semibold">📊 Status</th>
+              <th className="p-3 text-left text-sm font-semibold">🛠️ Action</th>
+              <th className="p-3 text-left text-sm font-semibold">📅 Due Date</th>
+              <th className="p-3 text-left text-sm font-semibold">🗑️ Delete</th>
             </tr>
           </thead>
           <tbody>
             {projects.map((project) => (
               <tr key={project.id} className="border-t hover:bg-gray-50">
                 <td className="p-3">{project.employeeName}</td>
-                <td className="p-3">{project.projectName}</td>
+                <td className="p-3">
+                  <button
+                    onClick={() => setModalProject(project)}
+                    className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full hover:bg-indigo-200 transition duration-200 font-semibold"
+                  >
+                    {project.projectName}
+                  </button>
+                </td>
                 <td className="p-3">
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
@@ -226,7 +236,7 @@ console.log("Project Data", projects);
                 <td className="p-3">
                 <button
                   onClick={() => openProjectModal(project)}
-                  className="px-3 py-1 bg-blue-400 rounded hover:bg-gray-300"
+                  className="px-3 py-1 bg-gradient-to-br from-indigo-500 to-pink-300 rounded-md hover:bg-orange-600 focus:outline-none text-white"
                 >
                   View
                 </button>
@@ -300,66 +310,33 @@ console.log("Project Data", projects);
             </Modal>
           )} 
       </div>
-      {/* Assign Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto mt-20"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      >
-        <h3 className="text-lg font-bold mb-4">Assign New Project</h3>
-        <form onSubmit={handleAssignProject} className="space-y-4">
-          
-          <label htmlFor="employeeId">Employee</label>
-          <select
-            id="employeeId"
-            name="employeeId"
-            value={newProject.employeeId}
-            onChange={e => setNewProject({ ...newProject, employeeId: e.target.value })}
-            required
-            className="w-full border p-2 rounded"
-          >
-            <option value="">Select employee</option>
-            {employeeList.map(emp => (
-              <option key={emp.id} value={emp.id}>{emp.name}</option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Project Name"
-            value={newProject.projectName}
-            onChange={e => setNewProject({ ...newProject, projectName: e.target.value })}
-            required
-            className="w-full border p-2 rounded"
-          />
-          {/*} Project submission due date */}
-          <label htmlFor="dueDate" >Due Date</label>
-          <input
-            type="date"
-            id="dueDate"
-            name="dueDate"
-            required
-            className="w-full border p-2 rounded"
-            value={newProject.dueDate}
-            onChange={e => setNewProject({ ...newProject, dueDate: e.target.value })}
-          />
-          <div className="flex justify-end space-x-2">
+      {modalProject && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
             <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 text-gray-600"
+              onClick={() => setModalProject(null)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl focus:outline-none"
             >
-              Cancel
+              &times;
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700"
-            >
-              Assign
-            </button>
+            <h3 className="text-xl font-bold text-indigo-700 mb-2">{modalProject.projectName}</h3>
+            <p className="text-gray-700 text-sm">
+              <span className="font-semibold text-indigo-600">📝 Description:</span><br />
+              {modalProject.projectDescription || 'No description provided.'}
+            </p>
+            <div className="mt-4 text-xs text-gray-500">
+              <span className="inline-block px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
+                Status: {modalProject.status}
+              </span>
+              {modalProject.dueDate && (
+                    <span className="ml-10">
+                  📅 Due: {new Date(modalProject.dueDate).toLocaleDateString()}
+                </span>
+              )}
+            </div>
           </div>
-        </form>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 };

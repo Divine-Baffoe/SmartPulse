@@ -19,7 +19,7 @@ UserRoutes.get('/insights', authMiddleware, asyncHandler(userController.getInsig
 UserRoutes.get('/reports', authMiddleware, asyncHandler(userController.getReports));
 UserRoutes.get('/settings', authMiddleware, asyncHandler(userController.getSettings));
 UserRoutes.get('/alerts', authMiddleware, asyncHandler(userController.getAlerts));
-UserRoutes.put('/settings', authMiddleware, asyncHandler(userController.updateSettings));
+UserRoutes.put('/update-settings', authMiddleware, asyncHandler(userController.updateSettings));
 UserRoutes.get('/employees', authMiddleware, asyncHandler(getEmployeesByCompany));
 
 

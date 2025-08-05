@@ -9,7 +9,8 @@ import EmployeeInsights from '../components/AdminDashboard/EmployeeInsight';
 import Alerts from '../components/AdminDashboard/Alerts';
 import Settings from '../components/AdminDashboard/Settings';
 import Reports from '../components/AdminDashboard/Reports';
-import AssignProjects from '../components/AdminDashboard/AssignProjects';
+import Assign from '../components/AdminDashboard/AssignProjects';
+import AssignProject from '../components/common/AssignProject';
 
 
 // Tab Components
@@ -48,7 +49,8 @@ const AdminDashboard: React.FC = () => {
           <Route path="team-overview" element={<TeamOverview />} />
           <Route path="employee-insights" element={<EmployeeInsights />} />
           <Route path="reports" element={<Reports />} />
-          <Route path="assign-projects" element={<AssignProjects/>} />
+          <Route path="assign-projects" element={<Assign />} />
+          <Route path="assign-project" element={<AssignProject/>} />
           <Route path="settings" element={<Settings />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="*" element={<Navigate to="/admin/dashboard/team-overview" replace />} />

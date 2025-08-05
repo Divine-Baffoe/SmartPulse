@@ -112,6 +112,7 @@ export const getProjects = async (req: Request, res: Response) => {
         status: p.status,
         dueDate: p.dueDate ? p.dueDate.toISOString() : null,
         submittedAt: p.submittedAt ? p.submittedAt.toISOString() : null,
+        projectDescription: p.projectDescription || "No description provided",
       }))
     );
   } catch (error) {
@@ -120,7 +121,7 @@ export const getProjects = async (req: Request, res: Response) => {
 };
 
 export const assignProject = async (req: Request, res: Response) => {
-  const { employeeId, projectName, dueDate } = req.body;
+  const { employeeId, projectName, dueDate, projectDescription } = req.body;
   if (!employeeId || !projectName) {
     return res.status(400).json({ error: 'Missing employeeId or projectName' });
   }
@@ -128,7 +129,7 @@ export const assignProject = async (req: Request, res: Response) => {
   if (!employee) {
     return res.status(404).json({ error: 'Employee not found in company database' });
   }
-  const project = await userService.assignProject(employeeId, projectName, dueDate);
+  const project = await userService.assignProject(employeeId, projectName, dueDate, projectDescription);
   res.status(201).json(project);
 };
 

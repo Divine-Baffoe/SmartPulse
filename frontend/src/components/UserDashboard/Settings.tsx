@@ -82,14 +82,25 @@ const Settings: React.FC = () => {
         // eslint-disable-next-line
     }, []);
 
-    const handleSave = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            // Just update local state for now
-            setSettings(formData);
-        } catch (err) {
+    const handleSave = async () => {
+        if (!formData) return;
+    try {
+        const res = await fetch('http://localhost:3000/api/employees/update-settings', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        if (!res.ok) {
             setError('Failed to save settings');
+            return;
         }
+        alert('Settings saved successfully');
+    } catch (err) {
+        setError('Failed to save settings');
+    }
     };
 
     const handleInvite = async (e: React.FormEvent) => {
@@ -109,10 +120,8 @@ const Settings: React.FC = () => {
 
     return (
         <div className="p-6 pt-2">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 transition-opacity duration-300 ease-in-out">
-                Settings
-            </h2>
-            <div className="bg-white p-8 rounded-lg shadow-lg space-y-6">
+            
+            <div className="bg-white mt-4 p-8 rounded-lg shadow-lg space-y-6">
                 {/* Profile Settings */}
                 <div>
                     <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile</h3>

@@ -160,7 +160,7 @@ const Reports: React.FC = () => {
         <div className="flex justify-between items-center">
           <div>
             <label htmlFor="period" className="text-gray-600 mr-2">
-              Time Period:
+              📅 Time Period:
             </label>
             <select
               id="period"
@@ -243,10 +243,10 @@ const Reports: React.FC = () => {
           <table className="min-w-full bg-gray-50 rounded-lg">
             <thead>
               <tr className="bg-gray-100">
-                <th className="p-3 text-left text-sm font-semibold text-gray-700">Employee</th>
-                <th className="p-3 text-left text-sm font-semibold text-gray-700">Time Worked</th>
-                <th className="p-3 text-left text-sm font-semibold text-gray-700">Productivity</th>
-                <th className="p-3 text-left text-sm font-semibold text-gray-700">Idle Time</th>
+                <th className="p-3 text-left text-sm font-semibold text-gray-700">👤 Employee</th>
+                <th className="p-3 text-left text-sm font-semibold text-gray-700">⏱️ Time Worked</th>
+                <th className="p-3 text-left text-sm font-semibold text-gray-700">⚡ Productivity</th>
+                <th className="p-3 text-left text-sm font-semibold text-gray-700">🛌 Idle Time</th>
               </tr>
             </thead>
             <tbody>

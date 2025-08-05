@@ -4,12 +4,12 @@ import {
   FaChartBar,
   FaHeartbeat,
   FaCalendar,
-  FaCog,
   FaBars,
   FaTimes,
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
   FaPaperPlane,
+  FaUser,
 } from 'react-icons/fa';
 
 export interface UserSidebarProps {
@@ -134,8 +134,8 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isCollapsed, setIsCollapsed }
                 }
                 onClick={() => setIsOpen(false)}
               >
-                <FaCog className="mr-2" />
-                {!isCollapsed && <span>Settings</span>}
+                <FaUser className="mr-2" />
+                {!isCollapsed && <span>Profile</span>}
               </NavLink>
             </li>
           </ul>

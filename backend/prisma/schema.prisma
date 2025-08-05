@@ -20,6 +20,7 @@ model ProjectAssignment {
   userId      Int
   user        User   @relation("UserToProjectAssignments", fields: [userId], references: [id])
   projectName String
+  projectDescription String @default("No description provided")
   githubLink  String?
   status      ProjectStatus // 'assigned' or 'completed' or 'rejected'
   dueDate     DateTime? // Due date for the project
