@@ -1,6 +1,16 @@
 import { io } from '../server';
 import { Request, Response } from 'express';
 import { employeeService } from '../services/Employee';
+import cloudinary from '../lib/cloudinary';
+import formidable from 'formidable';
+import fs from 'fs';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 
 const employeeController = {
   getUserStats: async (req: Request, res: Response) => {
@@ -75,8 +85,47 @@ const employeeController = {
   //}
 //},
 
-  
+  uploadProfileImage: async (req: Request, res: Response) => {
+  const form = formidable({ keepExtensions: true });
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) return res.status(500).json({ error: 'Upload failed' });
+
+    const imageFile = files.image;
+
+    if (!imageFile) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Handle both single and array cases
+    const file = Array.isArray(imageFile) ? imageFile[0] : imageFile;
+
+    if (!file.filepath) {
+      return res.status(400).json({ error: 'Invalid file structure' });
+    }
+
+    try {
+      const result = await cloudinary.uploader.upload(file.filepath, {
+        folder: 'employee_profiles',
+      });
+
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+      await employeeService.uploadProfileImage(userId, result.secure_url);
+
+      return res.status(200).json({ imageUrl: result.secure_url });
+    } catch (uploadError) {
+      return res.status(500).json({ error: 'Cloudinary upload failed' });
+    }
+  });
+},
+
 };
+
+
+
+
 // Get projects assigned to employee
 export const getEmployeeProjects = async (req: Request, res: Response) => {
   const employeeId = parseInt(req.query.employeeId as string);

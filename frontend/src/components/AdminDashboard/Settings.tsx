@@ -1,6 +1,6 @@
 // src/components/dashboard/Settings.tsx
 import React, { useState, useEffect } from 'react';
-import { FaUserPlus, FaUserMinus, FaSave } from 'react-icons/fa';
+import { FaUserPlus, FaUserMinus, FaSave, FaUserCircle } from 'react-icons/fa';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import Modal from 'react-modal';
 
@@ -10,6 +10,7 @@ Modal.setAppElement('#root');
 // Define TypeScript interfaces
 interface User {
   id: number;
+  avatarUrl?: string; // Google account image URL
   name: string;
   email: string;
   company?: string;
@@ -226,7 +227,21 @@ const Settings: React.FC = () => {
                 ) : (
                   settings?.users.map((user) => (
                     <tr key={user.id} className="border-t hover:bg-gray-50 transition-colors duration-200">
-                      <td className="p-3 text-gray-700">{user.name}</td>
+                      <td className="p-3 text-gray-700">
+                        <div className="flex items-center space-x-2">
+                            {user.avatarUrl ? (
+                                <img
+                                    src={user.avatarUrl}
+                                    alt={`${user.name}'s avatar`}
+                                    className="w-8 h-8 rounded-full"
+                                    onError={(e) => (e.currentTarget.src = '/fallback-avatar.png')} // Fallback image
+                                />
+                                ) : (
+                                <FaUserCircle className="w-10 h-10 text-gray-400" aria-label="Default avatar" />
+                                )}
+                                <span className="font-medium text-gray-700">{user.name}</span>
+                        </div>
+                      </td>
                       <td className="p-3 text-gray-700">{user.email}</td>
                       <td className="p-3 text-gray-700">{user.role}</td>
                       <td className="p-3 text-gray-700">{user.company || 'N/A'}</td>

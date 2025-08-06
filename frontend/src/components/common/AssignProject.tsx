@@ -7,6 +7,7 @@ import { FaClipboardList, FaUserPlus } from 'react-icons/fa';
 interface Employee {
   id: number;
   name: string;
+  avatarUrl?: string; // Google account image URL
 }
 
 const Assign: React.FC = () => {

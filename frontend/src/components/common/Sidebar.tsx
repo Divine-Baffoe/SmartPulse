@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaUsers, FaUser, FaFileAlt, FaCog, FaBell, FaBars, FaTimes, FaAngleDoubleLeft, FaAngleDoubleRight, FaPaperPlane } from 'react-icons/fa';
+import { FaUsers, FaUser, FaFileAlt, FaCog, FaBell, FaBars, FaTimes, FaAngleDoubleLeft, FaAngleDoubleRight, FaPaperPlane, FaUserCircle } from 'react-icons/fa';
 import socket from '../../socket';
 interface SidebarProps {
   isCollapsed: boolean;
@@ -183,6 +183,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
               >
                 <FaCog className="mr-2" />
                 {!isCollapsed && <span>Settings</span>}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/admin/dashboard/profile"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded-md transition-colors duration-200 ${
+                    isActive ? 'bg-primary text-white' : 'hover:bg-gray-700'
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaUserCircle className="mr-2" />
+                {!isCollapsed && <span>Profile</span>}
               </NavLink>
             </li>
           </ul>

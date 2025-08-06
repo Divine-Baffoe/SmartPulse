@@ -166,6 +166,7 @@ export const employeeService = {
     const user = await prisma.user.findUnique({ where: { id: userId },include: { company: true }, });
     if (!user) return null;
     return {
+      avatarUrl: user.avatarUrl,
       fullName: user.name,
       email: user.email,
       countrycode: user.countrycode || '',
@@ -178,6 +179,7 @@ export const employeeService = {
     return prisma.user.update({
       where: { id: userId },
       data: {
+        avatarUrl: updates.avatarUrl,
         name: updates.fullName,
         email: updates.email,
         countrycode: updates.countryCode,
@@ -287,6 +289,13 @@ logUserActivity: async (userId: number, activities: any[]) => {
     },
   },
 }) as Promise<SubmittedProject | null>;
+},
+
+uploadProfileImage: async (userId: number, imageUrl: string) => {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { avatarUrl: imageUrl },
+  });
 },
 
   

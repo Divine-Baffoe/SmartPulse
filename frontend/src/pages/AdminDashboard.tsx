@@ -11,6 +11,7 @@ import Settings from '../components/AdminDashboard/Settings';
 import Reports from '../components/AdminDashboard/Reports';
 import Assign from '../components/AdminDashboard/AssignProjects';
 import AssignProject from '../components/common/AssignProject';
+import AdminProfile from '../components/AdminDashboard/AdminProfile';
 
 
 // Tab Components
@@ -28,6 +29,7 @@ const AdminDashboard: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const userEmail = user?.email || 'Admin';
   const userName = user?.name || 'Admin';
+  const userProfileImage = user?.avatarUrl || '/default-avatar.png'; // Default image if not set
 
    const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -42,6 +44,7 @@ const AdminDashboard: React.FC = () => {
         <AdminDashboardHeader
           userName={userName}
           userEmail={userEmail}
+          userPhotoUrl={userProfileImage}
           isCollapsed={isCollapsed}
         />
         <Routes>
@@ -52,6 +55,8 @@ const AdminDashboard: React.FC = () => {
           <Route path="assign-projects" element={<Assign />} />
           <Route path="assign-project" element={<AssignProject/>} />
           <Route path="settings" element={<Settings />} />
+          <Route path="profile" element={<AdminProfile />} />
+          {/* Add more routes as needed */}
           <Route path="alerts" element={<Alerts />} />
           <Route path="*" element={<Navigate to="/admin/dashboard/team-overview" replace />} />
         </Routes>

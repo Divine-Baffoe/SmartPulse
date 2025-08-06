@@ -1,6 +1,6 @@
 // src/components/AdminDashboard/AssignProjects.tsx
 import React, { useState, useEffect,  } from 'react';
-import { FaPlus, FaLink, FaTrashAlt } from 'react-icons/fa';
+import { FaPlus, FaLink, FaTrashAlt, FaUserCircle } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ Modal.setAppElement('#root');
 
 interface Project {
   id: number;
+  avatarUrl?: string; // Google account image URL
   employeeName: string;
   projectName: string;
   githubLink?: string;
@@ -84,32 +85,6 @@ console.log("Project Data", projects);
     fetchProjects();
   }, []);
 
-  {/*const handleAssignProject = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!newProject.employeeId) {
-    alert('Please select an employee');
-    return;
-  }
-  const res = await fetch('http://localhost:3000/api/projects', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      employeeId: Number(newProject.employeeId),
-      projectName: newProject.projectName,
-      dueDate: newProject.dueDate,
-    })
-  });
-  if (!res.ok) {
-    alert('Failed to assign project');
-    return;
-  }
-  fetchProjects();
-  setNewProject({ employeeId: '', projectName: '', dueDate: ''});
-  setIsModalOpen(false);
-}; */}
 
   const markComplete = async (id: number, link: string) => {
   try {
@@ -205,7 +180,20 @@ console.log("Project Data", projects);
           <tbody>
             {projects.map((project) => (
               <tr key={project.id} className="border-t hover:bg-gray-50">
-                <td className="p-3">{project.employeeName}</td>
+                <td className="p-3">
+                  <div className="flex items-center space-x-2">
+                    {project.avatarUrl ? (
+                      <img
+                        src={project.avatarUrl}
+                        alt={project.employeeName}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <FaUserCircle className="h-8 w-8 text-gray-400" />
+                    )}
+                    <span>{project.employeeName}</span>
+                  </div>
+                </td>
                 <td className="p-3">
                   <button
                     onClick={() => setModalProject(project)}

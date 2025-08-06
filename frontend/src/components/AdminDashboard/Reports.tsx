@@ -1,6 +1,6 @@
 // src/components/dashboard/Reports.tsx
 import React, { useState, useEffect } from 'react';
-import { FaDownload, FaPlus } from 'react-icons/fa';
+import { FaDownload, FaPlus, FaUserCircle } from 'react-icons/fa';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { CSVLink } from 'react-csv';
 import Modal from 'react-modal';
@@ -21,6 +21,7 @@ Modal.setAppElement('#root');
 interface Report {
   id: number;
   userId: number;
+  avatarUrl?: string; // Google account image URL
   name: string;
   timeWorked: { hours: number; minutes: number };
   productivity: number; // %
@@ -34,48 +35,7 @@ interface CustomReport {
   period: 'day' | 'week' | 'month';
 }
 
-// Mock data (replace with API call)
-{/*const fetchMockReports = (): Promise<Report[]> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () =>
-        resolve([
-          {
-            id: 1,
-            userId: 1,
-            name: 'Maureen Semenhyia',
-            timeWorked: { hours: 2, minutes: 45 },
-            productivity: 70,
-            idleTime: { hours: 0, minutes: 30 },
-            appsUsed: [
-              { name: 'Slack', percentage: 30 },
-              { name: 'VS Code', percentage: 40 },
-            ],
-            websitesUsed: [
-              { name: 'Google', percentage: 50 },
-              { name: 'GitHub', percentage: 30 },
-            ],
-          },
-          {
-            id: 2,
-            userId: 2,
-            name: 'Phoebe McBrown',
-            timeWorked: { hours: 1, minutes: 30 },
-            productivity: 60,
-            idleTime: { hours: 0, minutes: 15 },
-            appsUsed: [
-              { name: 'Zoom', percentage: 50 },
-              { name: 'Chrome', percentage: 30 },
-            ],
-            websitesUsed: [
-              { name: 'YouTube', percentage: 40 },
-              { name: 'Reddit', percentage: 20 },
-            ],
-          },
-        ]),
-      1000,
-    ),
-  );*/}
+
 
 const Reports: React.FC = () => {
   const [reports, setReports] = useState<Report[]>([]);
@@ -263,7 +223,21 @@ const Reports: React.FC = () => {
                     className="border-t hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
                     onClick={() => handleRowClick(report.id)}
                   >
-                    <td className="p-3 text-gray-700">{report.name}</td>
+                    <td className="p-3 text-gray-700">
+                      <div className="flex items-center space-x-2">
+                        {report.avatarUrl ? (
+                          <img
+                            src={report.avatarUrl}
+                            alt={`${report.name}'s avatar`}
+                            className="w-8 h-8 rounded-full"
+                            onError={(e) => (e.currentTarget.src = '/fallback-avatar.png')} // Fallback image
+                          />
+                        ) : (
+                          <FaUserCircle className="w-8 h-8 text-gray-400" aria-label="Default avatar" />
+                        )}
+                        <span className="font-medium text-gray-700">{report.name}</span>
+                      </div>
+                    </td>
                     <td className="p-3">
                       {report.timeWorked.hours}h {report.timeWorked.minutes}m
                     </td>

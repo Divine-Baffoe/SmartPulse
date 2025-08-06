@@ -1,6 +1,15 @@
 import { Request, Response } from 'express';
 import { userService } from '../services/User';
 import { PrismaClient } from '@prisma/client';
+import cloudinary from '../lib/cloudinary';
+import formidable from 'formidable';
+import fs from 'fs';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 const prisma = new PrismaClient();
 
@@ -73,6 +82,70 @@ const userController = {
       res.status(500).json({ error: 'Failed to update settings' });
     }
   },
+
+  // Get Admin Profile
+  getAdminProfileSettings: async (req: Request, res: Response) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    try {
+      const settings = await userService.getAdminProfileSettings(req.user.id);
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch settings' });
+    }
+  },
+
+  // Update Admin Profile
+  updateAdminProfileSettings: async (req: Request, res: Response) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    try {
+      const updated = await userService.updateAdminProfile(req.user.id, req.body);
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update settings' });
+    }
+  },
+
+  uploadProfileImage: async (req: Request, res: Response) => {
+    const form = formidable({ keepExtensions: true });
+  
+    form.parse(req, async (err, fields, files) => {
+      if (err) return res.status(500).json({ error: 'Upload failed' });
+  
+      const imageFile = files.image;
+  
+      if (!imageFile) {
+        return res.status(400).json({ error: 'No image file provided' });
+      }
+  
+      // Handle both single and array cases
+      const file = Array.isArray(imageFile) ? imageFile[0] : imageFile;
+  
+      if (!file.filepath) {
+        return res.status(400).json({ error: 'Invalid file structure' });
+      }
+  
+      try {
+        const result = await cloudinary.uploader.upload(file.filepath, {
+          folder: 'employee_profiles',
+        });
+  
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  
+        await userService.uploadProfileImage(userId, result.secure_url);
+  
+        return res.status(200).json({ imageUrl: result.secure_url });
+      } catch (uploadError) {
+        return res.status(500).json({ error: 'Cloudinary upload failed' });
+      }
+    });
+  },
+  
+  
   
 
 }
@@ -106,6 +179,7 @@ export const getProjects = async (req: Request, res: Response) => {
       
       projects.map((p: any) => ({
         id: p.id,
+        avatarUrl: p.user.avatarUrl,
         employeeName: p.user.name,
         projectName: p.projectName,
         githubLink: p.githubLink,

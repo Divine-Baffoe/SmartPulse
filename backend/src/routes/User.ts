@@ -21,6 +21,9 @@ UserRoutes.get('/settings', authMiddleware, asyncHandler(userController.getSetti
 UserRoutes.get('/alerts', authMiddleware, asyncHandler(userController.getAlerts));
 UserRoutes.put('/update-settings', authMiddleware, asyncHandler(userController.updateSettings));
 UserRoutes.get('/employees', authMiddleware, asyncHandler(getEmployeesByCompany));
+UserRoutes.post('/upload-image', authMiddleware, asyncHandler(userController.uploadProfileImage)); // Endpoint to upload profile image
+UserRoutes.get('/profile', authMiddleware, asyncHandler(userController.getAdminProfileSettings)); // Endpoint to get employee by ID
+UserRoutes.get('/profile-update', authMiddleware, asyncHandler(userController.updateAdminProfileSettings)); // Endpoint to get employee by ID
 
 
 

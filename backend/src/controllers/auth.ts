@@ -110,6 +110,7 @@ const Login = async (req: Request, res: Response, next: NextFunction) => {
             user: {
                 id: user.id,
                 name: user.name,
+                avatarUrl: user.avatarUrl,
                 email: user.email,
                 companyId: user.companyId,
                 companyName: user.company.name,

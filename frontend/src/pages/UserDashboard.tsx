@@ -18,6 +18,7 @@ const UserDashboard: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const UserEmail = user?.email || 'User';
   const UserName = user?.name || 'User';
+  const UserProfileImage = user?.avatarUrl || '/default-avatar.png'; // Default image if not set
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -30,6 +31,7 @@ const UserDashboard: React.FC = () => {
             <UserHeader
               userName={UserName}
               userEmail={UserEmail}
+              userPhotoUrl={UserProfileImage}
               isCollapsed={isCollapsed}
               setIsCollapsed={setIsCollapsed} 
             />

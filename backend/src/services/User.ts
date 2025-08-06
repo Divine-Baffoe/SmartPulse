@@ -158,6 +158,7 @@ const userService = {
         id: user.id,
         userId: user.id,
         name: user.name,
+        avatarUrl: user.avatarUrl,
         timeWorked: {
           hours: Math.floor(hoursWorked),
           minutes: Math.round((hoursWorked % 1) * 60)
@@ -187,6 +188,7 @@ const userService = {
     
     select: {
       id: true,
+      avatarUrl: true,
       name: true,
       email: true,
       role: true,
@@ -196,6 +198,7 @@ const userService = {
 
   const users = rawUsers.map(u => ({
     id: u.id,
+    avatarUrl: u.avatarUrl,
     name: u.name,
     email: u.email,
     role: u.role,
@@ -228,7 +231,38 @@ const userService = {
     users,
   };
 },
+
+// Get Admin Profile
+getAdminProfileSettings: async (userId: number) => {
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { company: true }, });
+  if (!user) return null;
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,  
+    avatarUrl: user.avatarUrl,
+    company: user.company?.name ?? '',
+    contact: user.contact || '',
+  };
+},
+
+ //Update Admin Profile
+  updateAdminProfile: async (userId: number, updates: any) => {
+    return prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: updates.name,
+        email: updates.email,
+        contact: updates.contact,
+        avatarUrl: updates.avatarUrl,
+        countrycode: updates.countrycode,
+        company: { connect: { id: updates.companyId } },
+      },
+    });
+  },
   
+
   // Get all employees for a company
   getEmployeesByCompany: async (companyId: number) => {
     return prisma.user.findMany({
@@ -306,6 +340,12 @@ const userService = {
     where: { id: projectId },
     data: { dueDate: new Date(dueDate) },
     include: { user: true }
+  });
+},
+uploadProfileImage: async (userId: number, imageUrl: string) => {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { avatarUrl: imageUrl },
   });
 },
 

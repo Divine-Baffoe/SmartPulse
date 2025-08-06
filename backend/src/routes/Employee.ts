@@ -19,6 +19,7 @@ EmployeeRoutes.get('/settings', authMiddleware, asyncHandler(employeeController.
 EmployeeRoutes.put('/update-settings', authMiddleware, asyncHandler(employeeController.updateSettings));
 EmployeeRoutes.get('/projects', authMiddleware, asyncHandler(getEmployeeProjects));
 EmployeeRoutes.patch('/projects/:id/submit', authMiddleware, asyncHandler(submitProject));
+EmployeeRoutes.post('/upload-image', authMiddleware, asyncHandler(employeeController.uploadProfileImage));
 
 
 
