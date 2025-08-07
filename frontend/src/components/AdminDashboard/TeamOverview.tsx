@@ -362,7 +362,7 @@ const TeamOverview: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 transition-opacity duration-300 ease-in-out">
+      <h2 className="text-3xl font-bold mb-6 transition-opacity duration-300 ease-in-out bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
         Team Overview
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

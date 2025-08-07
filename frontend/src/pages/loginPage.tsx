@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import Bg from '../assets/images/Bg.avif';
-import BackLogin from '../assets/images/BackLogin.jpg';
+import register from '../assets/images/register.jpg';
 import {EyeIcon, EyeSlashIcon} from '@heroicons/react/24/outline';
 
 interface FormData {
@@ -82,7 +82,7 @@ const [showPassword, setShowPassword] = useState(false);
         <div className="flex max-w-3xl w-full bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-300 ease-in-out">
           <div className="hidden md:block md:w-1/2">
             <img
-              src={BackLogin}
+              src={register}
               alt="Login illustration"
               className="object-cover h-full w-full transition-opacity duration-300 ease-in-out"
             />

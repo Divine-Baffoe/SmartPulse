@@ -99,7 +99,7 @@ const EmployeeInsight: React.FC = () => {
 
   return (
     <div className="p-6 pt-2">
-      <h2 className="text-2xl font-bold mb-6 text-black transition-opacity duration-300 ease-in-out">
+      <h2 className="text-3xl font-bold mb-6 transition-opacity duration-300 ease-in-out bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
         Employee Insights
       </h2>
       <div className="bg-white/30 backdrop-blur-md border border-white/20 rounded-lg shadow overflow-x-auto transition-opacity duration-300 ease-in-out">
@@ -134,7 +134,7 @@ const EmployeeInsight: React.FC = () => {
                         <img
                           src={employee.avatarUrl}
                           alt={`${employee.name}'s avatar`}
-                          className="w-8 h-8 rounded-full"
+                          className="h-8 w-8 rounded-full object-cover"
                           onError={(e) => (e.currentTarget.src = '/fallback-avatar.png')} // Fallback image
                         />
                       ) : (

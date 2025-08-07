@@ -170,7 +170,7 @@ const Settings: React.FC = () => {
                         <label className="block text-sm font-medium items-center text-gray-600">Profile Image</label>
                         <img
                             src={formData?.avatarUrl || '/default-avatar.png'}
-                            alt="Admin Avatar"
+                            alt="User Avatar"
                             className="w-24 h-24 rounded-full object-cover border-4 border-cyan-400"
                         />
                         <h2 className="mt-2 text-lg font-semibold text-blue-700 text-center">

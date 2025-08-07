@@ -98,7 +98,7 @@ const Assign: React.FC = () => {
             value={formData.employeeId}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary focus:outline-none"
           >
             <option value="">Select employee</option>
             {employeeList.map(emp => (
@@ -116,7 +116,7 @@ const Assign: React.FC = () => {
             value={formData.projectName}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -129,7 +129,7 @@ const Assign: React.FC = () => {
             onChange={handleChange}
             required
             rows={4}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -142,7 +142,7 @@ const Assign: React.FC = () => {
             value={formData.dueDate}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:outline-none"
           />
         </div>
 
@@ -150,7 +150,7 @@ const Assign: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none"
           >
             Cancel
           </button>
@@ -158,7 +158,7 @@ const Assign: React.FC = () => {
             type="submit"
             onClick={handleAssignClick}
             disabled={loading}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700 focus:outline-none"
           >
             {loading ? 'Assigning...' : 'Assign Project'}
           </button>
@@ -194,13 +194,13 @@ const Assign: React.FC = () => {
             <div className="mt-6 flex justify-end space-x-3">
                 <button
                 onClick={() => setShowPreviewModal(false)}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none"
                 >
                 Cancel
                 </button>
                 <button
                 onClick={handleSubmit} // Your actual submit logic
-                className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
+                className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark focus:outline-none"
                 >
                 Confirm & Submit
                 </button>

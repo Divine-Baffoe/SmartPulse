@@ -5,7 +5,7 @@ import Footer from '../components/common/Footer';
 import Bg from '../assets/images/Bg.avif';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import BackLogin from '../assets/images/BackLogin.jpg';
+import register from '../assets/images/register.jpg';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import type { CountryData } from 'react-phone-input-2';
 
@@ -29,29 +29,6 @@ const [showPassword, setShowPassword] = useState(false);
     const { name, value, type, checked } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
-
-  {/* const handlePhoneChange = (phone: string, country: CountryData) => {
-    try {
-      const phoneNumber = parsePhoneNumber(phone, country.countryCode.toUpperCase());
-      if (phoneNumber && phoneNumber.isValid()) {
-        setFormData({
-          ...formData,
-          contact: phoneNumber.nationalNumber,
-          countrycode: `+${country.dialCode}`,
-        });
-        setPhoneError(null);
-      } else {
-        setPhoneError('Invalid phone number');
-      }
-    } catch {
-      setPhoneError('Invalid phone number format');
-      setFormData({
-        ...formData,
-        contact: phone.replace(`+${country.dialCode}`, ''),
-        countrycode: `+${country.dialCode}`,
-      });
-    }
-  }; */}
 
   const handlePhoneChange = (phone: string, country: CountryData) => {
     setFormData({
@@ -274,7 +251,7 @@ const togglePasswordVisibility = () => {
             </p>
           </div>
           <div className="hidden md:block md:w-1/2">
-            <img src={BackLogin} alt="Register illustration" className="object-cover h-full w-full" />
+            <img src={register} alt="Register illustration" className="object-cover h-full w-full" />
           </div>
         </div>
       </section>

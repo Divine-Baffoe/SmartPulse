@@ -25,9 +25,7 @@ const AssignProjects: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalProject, setModalProject] = useState<Project | null>(null);
-  const [employeeList, setEmployeeList] = useState<any[]>([]);
-  const adminData = JSON.parse(localStorage.getItem('user') || '{}');
-  const currentCompanyId = adminData.companyId;
+  
  
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
@@ -41,7 +39,7 @@ const closeProjectModal = () => {
 };
 
 console.log("Project Data", projects);
-
+{/*}
   useEffect(() => {
     console.log('adminData:', adminData);
     console.log('currentCompanyId:', currentCompanyId);
@@ -61,7 +59,7 @@ console.log("Project Data", projects);
     }
   };
   fetchEmployees();
-}, [currentCompanyId]);
+}, [currentCompanyId]); */}
 
 
   const fetchProjects = async () => {
@@ -152,7 +150,9 @@ console.log("Project Data", projects);
 
   return (
     <div className="p-6 pt-2">
-      <h2 className="text-2xl font-bold mb-2 text-gray-800">Assign Projects</h2>
+      <h2 className="text-3xl font-bold mb-2 transition-opacity duration-300 ease-in-out bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
+        Projects
+      </h2>
       <div className="flex justify-end mb-4">
         <button
           onClick={() => navigate('/admin/dashboard/assign-project')}
